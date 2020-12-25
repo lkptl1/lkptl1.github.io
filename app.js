@@ -4,11 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-
-
-
-
     var data = []
     var monthA = ["January", "February", "March", "April", "May", "June", "July",
         "August", "September", "October", "November", "December"];
@@ -58,13 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawGraph(data) {
         Highcharts.chart('container', {
             chart: {
-                type: 'column'
+                type: 'column',
+                // backgroundColor:'#d7e9f5'
             },
             title: {
                 text: 'Total Spending'
             },
             subtitle: {
-                // text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+
             },
             accessibility: {
                 announceNewData: {
@@ -72,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             xAxis: {
-                type: 'category'
+                type: 'Month'
             },
             yAxis: {
                 title: {
@@ -95,12 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}'
+                pointFormat: '<b><span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}</b>'
             },
 
             series: [
                 {
-                    name: "Browsers",
+                    name: "<b>Spending</b>",
                     colorByPoint: true,
                     data: data
                 }
@@ -108,8 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     }
-
-
 
     ///////////////////////// month wise data
     function getMonthWiseData(monthWiseData) {
@@ -174,47 +168,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    Date.prototype.getWeek = function (dowOffset) {
-        /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
+    // Date.prototype.getWeek = function (dowOffset) {
+    //     /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
-        dowOffset = typeof (dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
-        var newYear = new Date(this.getFullYear(), 0, 1);
-        var day = newYear.getDay() - dowOffset; //the day of week the year begins on
-        day = (day >= 0 ? day : day + 7);
-        var daynum = Math.floor((this.getTime() - newYear.getTime() -
-            (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
-        var weeknum;
-        //if the year starts before the middle of a week
-        if (day < 4) {
-            weeknum = Math.floor((daynum + day - 1) / 7) + 1;
-            if (weeknum > 52) {
-                nYear = new Date(this.getFullYear() + 1, 0, 1);
-                nday = nYear.getDay() - dowOffset;
-                nday = nday >= 0 ? nday : nday + 7;
-                /*if the next year starts before the middle of
-                  the week, it is week #1 of that year*/
-                weeknum = nday < 4 ? 1 : 53;
-            }
-        }
-        else {
-            weeknum = Math.floor((daynum + day - 1) / 7);
-        }
-        return weeknum;
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //     dowOffset = typeof (dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
+    //     var newYear = new Date(this.getFullYear(), 0, 1);
+    //     var day = newYear.getDay() - dowOffset; //the day of week the year begins on
+    //     day = (day >= 0 ? day : day + 7);
+    //     var daynum = Math.floor((this.getTime() - newYear.getTime() -
+    //         (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
+    //     var weeknum;
+    //     //if the year starts before the middle of a week
+    //     if (day < 4) {
+    //         weeknum = Math.floor((daynum + day - 1) / 7) + 1;
+    //         if (weeknum > 52) {
+    //             nYear = new Date(this.getFullYear() + 1, 0, 1);
+    //             nday = nYear.getDay() - dowOffset;
+    //             nday = nday >= 0 ? nday : nday + 7;
+    //             /*if the next year starts before the middle of
+    //               the week, it is week #1 of that year*/
+    //             weeknum = nday < 4 ? 1 : 53;
+    //         }
+    //     }
+    //     else {
+    //         weeknum = Math.floor((daynum + day - 1) / 7);
+    //     }
+    //     return weeknum;
+    // };
 
 
 
@@ -243,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function drawSunGraph(month) {
-       
+
         d3.select('.sunburst').selectAll('*').remove()
         const width = window.innerWidth,
             height = window.innerHeight,
@@ -294,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const svg = d3.select('.sunburst').append('svg')
             .style('width', '90vw')
-            .style('height', '100vh')
+            .style('height', '90vh')
             .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
             .on('click', () => focusOn());
         console.log(month)
@@ -308,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (month == 0) {
                 root = root
             } else {
-                
+
                 console.log('hola')
                 root = root.filter(ele => ele.data_dt)
                 root = root.filter(ele => {
@@ -318,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return month == tmonth;
                     // console.log(cMonth+1)
                 })
-    
+
             }
             console.log(root)
             var abc = removeGarbageData(root, month)
@@ -424,20 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function removeGarbageData(json, month) {
         var allA = []
         var allB = []
-
-
-        // console.table(json); // this will show the info it in firebug consolecon
-        // console.log(json)
-
-
-
-
-
-
-       
-
-
-
         console.log(json)
 
         var c1Data = json.map((ele) => ele.category_level1)
@@ -466,16 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         catSubAraay = catSubAraay.map((ele) => uniqq(ele))
-
-        // console.log(allA)
-        // console.log("cat1",cat1)
-        // console.log('catSubArray',catSubAraay)
-
-
-
-
-
-        // console.log(allA)
 
 
         ///level 3
@@ -517,8 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 children: []
             })
 
-            // console.log(allC[property])
-
 
 
         }
@@ -546,35 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         })
-
-
-        globalObject.children.forEach((ele, index) => {
-
-            for (const p in allC[ele.name]) {
-                //   console.log(typeof(allC[ele.name][p]))
-                for (const inp in allC[ele.name][p]) {
-                    //   console.log(allC[ele.name][p][inp])
-                }
-
-            }
-        })
-
-
-        // for(var i=0;i<catSubAraay.length;i++){
-
-
-
-        //     for(var j=0;j<catSubAraay[i].length;j++){
-        //         preSetData.push({
-        //             id: `${i+2}.${j+1}`,
-        //             parent: '',
-        //             name: catSubAraay[i][j]
-        //         })
-        //     }
-
-        // }
-
-
 
         return globalObject;
 
