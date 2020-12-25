@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var data = []
     var monthA = ["January", "February", "March", "April", "May", "June", "July",
         "August", "September", "October", "November", "December"];
-    $.getJSON("https://www.json-generator.com/api/json/get/ceGRWQWhaq?indent=2", function (json) {
+    $.getJSON("http://www.json-generator.com/api/json/get/ceGRWQWhaq?indent=2", function (json) {
 
 
         var json = json.filter(ele => ele.category_level1 !== "CREDIT CARD PAYMENTS" && ele.category_level1 !== "NULL")
@@ -222,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('#sun').on('change', function (e) {
         var valueSelected = this.value;
+        d3.select('.sunburst').selectAll('*').remove()
         drawSunGraph(valueSelected)
 
     });
@@ -242,8 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function drawSunGraph(month) {
-
-
+       
+        d3.select('.sunburst').selectAll('*').remove()
         const width = window.innerWidth,
             height = window.innerHeight,
             maxRadius = (Math.min(width, height) / 2) - 5;
@@ -314,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // var cMonth=new Date().getMonth()-1
                     var tmonth = new Date(ele.data_dt).getMonth() + 1
                     console.log(month)
-                    return 10 == tmonth;
+                    return month == tmonth;
                     // console.log(cMonth+1)
                 })
     
