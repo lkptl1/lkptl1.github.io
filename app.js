@@ -4,32 +4,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    var data = []
-    var monthA = ["January", "February", "March", "April", "May", "June", "July",
-        "August", "September", "October", "November", "December"];
-    $.getJSON("https://www.json-generator.com/api/json/get/ceGRWQWhaq?indent=2", function (json) {
+    var data=[]
+    var chartType='column'
+    var chartData=[]
+    var monthA=["January","February","March","April","May","June","July",
+    "August","September","October","November","December"];
+    $.getJSON("https://www.json-generator.com/api/json/get/ceGRWQWhaq?indent=2", function(json) {
 
-
-        var json = json.filter(ele => ele.category_level1 !== "CREDIT CARD PAYMENTS" && ele.category_level1 !== "NULL")
+       
+        var json=json.filter(ele=>ele.category_level1 !== "CREDIT CARD PAYMENTS" && ele.category_level1 !== "NULL")
         console.log(json)
-        var monthWiseData = [];
+        var monthWiseData=[];
 
 
-        json.forEach((ele, index) => {
+        json.forEach((ele,index)=>{
 
-            var tmonth = new Date(ele.data_dt).getMonth()
-
-            if (monthWiseData[tmonth]) {
+            var tmonth= new Date(ele.data_dt).getMonth()
+                
+            if(monthWiseData[tmonth]){
                 monthWiseData[tmonth].push(ele);
-            } else {
-                monthWiseData[tmonth] = [];
+            }else{
+                monthWiseData[tmonth]=[];
                 monthWiseData[tmonth].push(ele);
             }
         })
-
-        // setTimeout(()=>{getWeekWiseData(monthWiseData,12)},5000)
+      
+        
         getMonthWiseData(monthWiseData)
-
         $('#sel1').on('change', function (e) {
             // var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
@@ -42,25 +43,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         });
+        $('#chartType').on('change', function (e) {
+            // var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            console.log(valueSelected)
+            if (valueSelected == 1) {
+                chartType="column"
+                drawGraph(chartData)
+            }else if (valueSelected == 2) {
+                chartType="bar"
+                drawGraph(chartData)
+            } else if (valueSelected == 3) {
+                chartType="line"
+                drawGraph(chartData)
+            } else if (valueSelected == 4) {
+                chartType="pie"
+                drawGraph(chartData)
+                
+            } 
+
+        });
+        
 
 
         console.log(monthWiseData)
-
+       
 
     })
 
 
-    function drawGraph(data) {
+    function drawGraph(data){
         Highcharts.chart('container', {
             chart: {
-                type: 'column',
-                // backgroundColor:'#d7e9f5'
+                type: chartType
             },
             title: {
                 text: 'Total Spending'
             },
             subtitle: {
-
+                // text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
             },
             accessibility: {
                 announceNewData: {
@@ -68,13 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             xAxis: {
-                type: 'Month'
+                type: 'category'
             },
             yAxis: {
                 title: {
                     text: 'Total Amount'
                 }
-
+        
             },
             legend: {
                 enabled: false
@@ -88,114 +109,87 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             },
-
+        
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<b><span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}</b>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}'
             },
-
+        
             series: [
                 {
-                    name: "<b>Spending</b>",
+                    name: "Spending",
                     colorByPoint: true,
-                    data: data
+                    data: chartData
                 }
             ]
-        });
-
+        }); 
+    
     }
 
-    ///////////////////////// month wise data
-    function getMonthWiseData(monthWiseData) {
-        var data = []
-        monthWiseData.forEach((ele, ind) => {
 
-            sum = monthWiseData[ind].reduce((sum, ele) => {
+
+    ///////////////////////// month wise data
+    function getMonthWiseData(monthWiseData){
+        var data=[]
+        monthWiseData.forEach((ele,ind)=>{
+
+            sum=  monthWiseData[ind].reduce((sum, ele) =>{
                 // console.log(sum)
-                //  console.log(parseInt(ele.amount))   
-                return parseInt(ele.amount) + sum
-            }, 0)
-            //  console.log(sum)
-            // console.log('=======================',monthA[ind])
-            data.push({
-                name: monthA[ind],
-                y: sum
-            })
-            //  console.log(data)  
+             console.log(parseInt(ele.amount))   
+             return parseInt(ele.amount) + sum },0)
+             console.log(sum)
+                console.log('=======================',monthA[ind])
+             data.push({
+                 name:monthA[ind],
+                 y:sum
+             })
+             console.log(data)  
 
         })
+        chartData=data
         drawGraph(data)
         // return data;
     }
 
 
-    function getWeekWiseData(monthWiseData, month) {
+    function getWeekWiseData(monthWiseData,month){
         // console.log(monthWiseData,month-1)
-        var dateWiseData = []
-        var data = []
-        monthWiseData[month - 1].forEach((ele, index) => {
+        var dateWiseData=[]
+        var data=[]
+        monthWiseData[month-1].forEach((ele,index)=>{
 
-            var date = new Date(ele.data_dt).getDate()
+            var date= new Date(ele.data_dt).getDate()
             console.log(date)
-
-            if (dateWiseData[date]) {
+                
+            if(dateWiseData[date]){
                 dateWiseData[date].push(ele);
-            } else {
-                dateWiseData[date] = [];
+            }else{
+                dateWiseData[date]=[];
                 dateWiseData[date].push(ele);
             }
         })
-        dateWiseData.forEach((ele, ind) => {
+        dateWiseData.forEach((ele,ind)=>{
 
-            sum = dateWiseData[ind].reduce((sum, ele) => {
+            sum=  dateWiseData[ind].reduce((sum, ele) =>{
                 // console.log(sum)
-                //  console.log(parseInt(ele.amount))   
-                return parseInt(ele.amount) + sum
-            }, 0)
+            //  console.log(parseInt(ele.amount))   
+             return parseInt(ele.amount) + sum },0)
             //  console.log(sum)
-            // console.log('=======================',monthA[ind])
-            data.push({
-                name: ind,
-                y: sum
-            })
+                // console.log('=======================',monthA[ind])
+             data.push({
+                 name:ind,
+                 y:sum
+             })
             //  console.log(data)  
 
         })
+        chartData=data
         drawGraph(data)
         // return data
 
 
 
     }
-
-    // Date.prototype.getWeek = function (dowOffset) {
-    //     /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
-
-    //     dowOffset = typeof (dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
-    //     var newYear = new Date(this.getFullYear(), 0, 1);
-    //     var day = newYear.getDay() - dowOffset; //the day of week the year begins on
-    //     day = (day >= 0 ? day : day + 7);
-    //     var daynum = Math.floor((this.getTime() - newYear.getTime() -
-    //         (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
-    //     var weeknum;
-    //     //if the year starts before the middle of a week
-    //     if (day < 4) {
-    //         weeknum = Math.floor((daynum + day - 1) / 7) + 1;
-    //         if (weeknum > 52) {
-    //             nYear = new Date(this.getFullYear() + 1, 0, 1);
-    //             nday = nYear.getDay() - dowOffset;
-    //             nday = nday >= 0 ? nday : nday + 7;
-    //             /*if the next year starts before the middle of
-    //               the week, it is week #1 of that year*/
-    //             weeknum = nday < 4 ? 1 : 53;
-    //         }
-    //     }
-    //     else {
-    //         weeknum = Math.floor((daynum + day - 1) / 7);
-    //     }
-    //     return weeknum;
-    // };
-
 
 
     ///////////////////column chart ends////////////
