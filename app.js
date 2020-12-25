@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var data = []
     var monthA = ["January", "February", "March", "April", "May", "June", "July",
         "August", "September", "October", "November", "December"];
-    $.getJSON("http://www.json-generator.com/api/json/get/ceGRWQWhaq?indent=2", function (json) {
+    $.getJSON("https://www.json-generator.com/api/json/get/ceGRWQWhaq?indent=2", function (json) {
 
 
         var json = json.filter(ele => ele.category_level1 !== "CREDIT CARD PAYMENTS" && ele.category_level1 !== "NULL")
